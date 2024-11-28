@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.btnLogin.setOnClickListener(LoginActivity.this);
+        binding.btnLogin.setOnClickListener(this);
     }
 
     @Override
@@ -69,13 +69,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (TextUtils.isEmpty(email)) {
             binding.etEmail.setError("Email can't be empty");
-            Toast.makeText(LoginActivity.this,"Email can't be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Email can't be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (TextUtils.isEmpty(password)) {
             binding.etPassword.setError("Password can't be empty");
-            Toast.makeText(LoginActivity.this,"Password can't be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Password can't be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
 

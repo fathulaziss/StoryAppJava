@@ -11,4 +11,7 @@
     <string name="password">Password</string>
     <string name="login_email_hint">Masukkan Email</string>
     <string name="login_password_hint">Masukkan Password</string>
+    <string name="register_title">Lengkapi data dirimu dibawah ini ya</string>
+    <string name="name">Nama</string>
+    <string name="name_hint">Masukkan Nama</string>
 </resources>

@@ -85,9 +85,13 @@ public class PasswordEditText extends AppCompatEditText {
 
         setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                updateBorderDrawable(focusedBorderColor);
+                validateInput();
             } else {
-                updateBorderDrawable(defaultBorderColor);
+                if (isValidInput(Objects.requireNonNull(getText()).toString())) {
+                    updateBorderDrawable(defaultBorderColor);
+                } else {
+                    updateBorderDrawable(errorBorderColor);
+                }
             }
             updateEyeIconVisibility();
         });
@@ -100,7 +104,7 @@ public class PasswordEditText extends AppCompatEditText {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // do nothing
+                validateInput();
             }
 
             @Override
@@ -148,17 +152,24 @@ public class PasswordEditText extends AppCompatEditText {
 
     private void validateInput() {
         String text = Objects.requireNonNull(getText()).toString().trim();
-        if (isValidInput(text)) {
-            updateBorderDrawable(focusedBorderColor);
-            setError(null);
-        } else {
+        if (text.isEmpty()) {
             updateBorderDrawable(errorBorderColor);
             setError("Password can't be Empty");
+        } else {
+            if (isValidInput(text)) {
+                updateBorderDrawable(errorBorderColor);
+                setError("Password can't be less than 8 character");
+            } else {
+                updateBorderDrawable(focusedBorderColor);
+                setError(null);
+            }
         }
+
+
     }
 
     private boolean isValidInput(String password) {
-        return !password.isEmpty();
+        return password.length() < 8;
     }
 
     private void updateBorderDrawable(int borderColor) {
