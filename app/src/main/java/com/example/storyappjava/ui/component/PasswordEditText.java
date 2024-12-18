@@ -34,6 +34,8 @@ public class PasswordEditText extends AppCompatEditText {
     private int maxLines = 1;
     private boolean scrollHorizontally = true;
 
+    private boolean isValid = false;
+
     public PasswordEditText(@NonNull Context context) {
         super(context);
         init(context, null);
@@ -87,7 +89,7 @@ public class PasswordEditText extends AppCompatEditText {
             if (hasFocus) {
                 validateInput();
             } else {
-                if (isValidInput(Objects.requireNonNull(getText()).toString())) {
+                if (isValid) {
                     updateBorderDrawable(defaultBorderColor);
                 } else {
                     updateBorderDrawable(errorBorderColor);
@@ -153,13 +155,16 @@ public class PasswordEditText extends AppCompatEditText {
     private void validateInput() {
         String text = Objects.requireNonNull(getText()).toString().trim();
         if (text.isEmpty()) {
+            isValid = false;
             updateBorderDrawable(errorBorderColor);
             setError("Password can't be Empty");
         } else {
             if (isValidInput(text)) {
+                isValid = false;
                 updateBorderDrawable(errorBorderColor);
                 setError("Password can't be less than 8 character");
             } else {
+                isValid = true;
                 updateBorderDrawable(focusedBorderColor);
                 setError(null);
             }
