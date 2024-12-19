@@ -9,9 +9,9 @@ import androidx.lifecycle.MediatorLiveData;
 import com.example.storyappjava.data.remote.Result;
 import com.example.storyappjava.data.remote.response.RegisterResponse;
 import com.example.storyappjava.data.remote.retrofit.ApiService;
-import com.example.storyappjava.ui.activity.RegisterActivity;
+import com.google.gson.Gson;
 
-import java.util.List;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,12 +45,26 @@ public class AuthRepository {
         client.enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
+                Log.d(TAG, "response code : " + response.code());
+                Log.d(TAG, "response message : " + response.message());
                 if (response.isSuccessful()) {
+                    Log.d(TAG, "response body : " + response.body());
                     if (response.body() != null) {
                         registerResult.setValue(new Result.Success<>(response.body()));
                     }
                 } else {
-                    registerResult.setValue(new Result.Error<>(response.message()));
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.d(TAG, "response error body : " + errorBody);
+
+                            Gson gson = new Gson();
+                            RegisterResponse errorResponse = gson.fromJson(errorBody, RegisterResponse.class);
+                            registerResult.setValue(new Result.Error<>(errorResponse.getMessage()));
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG,"Error reading the response body", e);
+                    }
                 }
             }
 

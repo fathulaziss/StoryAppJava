@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setVisibility(View.VISIBLE);
                     RegisterResponse res = ((Result.Success<RegisterResponse>) result).getData();
-                    Toast.makeText(this, "Berhasil membuat akun: "+ res.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Berhasil: "+ res.getMessage(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else if (result instanceof Result.Error) {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "Terjadi kesalahan: "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Gagal: "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
