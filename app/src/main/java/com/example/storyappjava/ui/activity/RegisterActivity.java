@@ -50,6 +50,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
 
+        authViewModel.getRegisterResult().observe(this, result -> {
+            if (result != null) {
+                if (result instanceof Result.Loading) {
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.btnRegister.setVisibility(View.GONE);
+                } else if (result instanceof Result.Success) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnRegister.setVisibility(View.VISIBLE);
+                    RegisterResponse res = ((Result.Success<RegisterResponse>) result).getData();
+                    Toast.makeText(this, "Berhasil membuat akun: "+ res.getMessage(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else if (result instanceof Result.Error) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnRegister.setVisibility(View.VISIBLE);
+                    Toast.makeText(this, "Terjadi kesalahan: "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         binding.btnRegister.setOnClickListener(this);
     }
 
@@ -59,30 +81,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             if (validateRegister()) {
                 authViewModel
                         .register(
+                                this,
                                 Objects.requireNonNull(binding.etName.getText()).toString(),
                                 Objects.requireNonNull(binding.etEmail.getText()).toString(),
-                                Objects.requireNonNull(binding.etPassword.getText()).toString())
-                        .observe(this, result -> {
-                            if (result != null) {
-                                if (result instanceof Result.Loading) {
-                                    binding.progressBar.setVisibility(View.VISIBLE);
-                                    binding.btnRegister.setVisibility(View.GONE);
-                                } else if (result instanceof Result.Success) {
-                                    binding.progressBar.setVisibility(View.GONE);
-                                    binding.btnRegister.setVisibility(View.VISIBLE);
-                                    RegisterResponse res = ((Result.Success<RegisterResponse>) result).getData();
-                                    Toast.makeText(this, "Berhasil membuat akun: "+ res.getMessage(), Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(this, LoginActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                } else if (result instanceof Result.Error) {
-                                    binding.progressBar.setVisibility(View.GONE);
-                                    binding.btnRegister.setVisibility(View.VISIBLE);
-                                    Toast.makeText(this, "Terjadi kesalahan: "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                                Objects.requireNonNull(binding.etPassword.getText()).toString());
             }
         }
     }
