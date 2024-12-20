@@ -1,20 +1,23 @@
 package com.example.storyappjava.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.storyappjava.R;
@@ -24,7 +27,6 @@ import com.example.storyappjava.databinding.ActivityRegisterBinding;
 import com.example.storyappjava.ui.viewmodel.AuthViewModel;
 import com.example.storyappjava.ui.viewmodel.ViewModelFactory;
 
-import java.util.List;
 import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,19 +38,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
 
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Register");
-        }
-        binding.toolbar.setTitleTextColor(Color.WHITE);
+        binding.main.getViewTreeObserver().addOnPreDrawListener(() -> {
+            isKeyboardVisible();
+            return true;
+        });
 
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
+
+        Toolbar toolbar = binding.appBar.toolbarTitleAppBar;
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.register));
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setNavigationOnClickListener(v -> {
+            getOnBackPressedDispatcher().onBackPressed();
+        });
 
         authViewModel.getRegisterResult().observe(this, result -> {
             if (result != null) {
@@ -59,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setVisibility(View.VISIBLE);
                     RegisterResponse res = ((Result.Success<RegisterResponse>) result).getData();
-                    Toast.makeText(this, "Berhasil: "+ res.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getString(R.string.success) + ": " + res.getMessage(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -67,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else if (result instanceof Result.Error) {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "Gagal: "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getString(R.string.failed) + ": "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -90,19 +98,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View view = getCurrentFocus();
-            if (view instanceof EditText) {
-                // Dismiss the keyboard when touching outside EditText
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
-                view.clearFocus();
             }
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     private boolean validateRegister() {
@@ -111,23 +120,39 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String password = Objects.requireNonNull(binding.etPassword.getText()).toString().trim();
 
         if (TextUtils.isEmpty(name)) {
-            binding.etName.setError("Name can't be empty");
-            Toast.makeText(this,"Name can't be empty", Toast.LENGTH_SHORT).show();
+            binding.etName.requestFocus();
+            binding.etName.setError(getString(R.string.empty_name_validation));
+            Toast.makeText(this,getString(R.string.empty_name_validation), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (TextUtils.isEmpty(email)) {
-            binding.etEmail.setError("Email can't be empty");
-            Toast.makeText(this,"Email can't be empty", Toast.LENGTH_SHORT).show();
+            binding.etEmail.requestFocus();
+            binding.etEmail.setError(getString(R.string.empty_email_validation));
+            Toast.makeText(this,getString(R.string.empty_email_validation), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (TextUtils.isEmpty(password)) {
-            binding.etPassword.setError("Password can't be empty");
-            Toast.makeText(this,"Password can't be empty", Toast.LENGTH_SHORT).show();
+            binding.etPassword.requestFocus();
+            binding.etPassword.setError(getString(R.string.empty_password_validation));
+            Toast.makeText(this,getString(R.string.empty_password_validation), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
+    }
+
+    private void isKeyboardVisible() {
+        Rect rect = new Rect();
+        binding.main.getWindowVisibleDisplayFrame(rect);
+        int screenHeight = binding.main.getHeight();
+        int keypadHeight = screenHeight - rect.bottom;
+
+        if (keypadHeight > screenHeight * 0.15) {
+            binding.layoutContent.setPadding(0, 0, 0, rect.bottom / 2);
+        } else {
+            binding.layoutContent.setPadding(0, 0, 0, 0);
+        }
     }
 }

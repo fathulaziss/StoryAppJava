@@ -1,108 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_alignParentBottom="true"
     tools:context=".ui.activity.RegisterActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/custom_app_bar_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:paddingTop="24dp" />
+        android:layout_below="@+id/app_bar"
+        android:isScrollContainer="false"
+        android:overScrollMode="never"
+        android:scrollbars="vertical">
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="16dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginBottom="24dp"
-        android:layout_marginHorizontal="16dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="@string/register_title" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginVertical="24dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@string/register_title" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:textSize="14sp"
-        android:layout_gravity="start"
-        android:text="@string/name" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:layout_gravity="start"
+                    android:text="@string/name" />
 
-    <com.example.storyappjava.ui.component.CustomEditText
-        android:id="@+id/et_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textSize="14sp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:hint="@string/name_hint"
-        app:prefixIcon="@drawable/ic_person" />
+                <com.example.storyappjava.ui.component.CustomEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/name_hint"
+                    android:singleLine="true"
+                    app:prefixIcon="@drawable/ic_person" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:textSize="14sp"
-        android:layout_gravity="start"
-        android:text="@string/email" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:layout_gravity="start"
+                    android:text="@string/email" />
 
-    <com.example.storyappjava.ui.component.EmailEditText
-        android:id="@+id/et_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textSize="14sp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:hint="@string/login_email_hint"
-        app:prefixIcon="@drawable/ic_email" />
+                <com.example.storyappjava.ui.component.EmailEditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/login_email_hint"
+                    android:singleLine="true"
+                    app:prefixIcon="@drawable/ic_email" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginHorizontal="16dp"
-        android:textSize="14sp"
-        android:layout_gravity="start"
-        android:text="@string/password" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:layout_gravity="start"
+                    android:text="@string/password" />
 
-    <com.example.storyappjava.ui.component.PasswordEditText
-        android:id="@+id/et_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textSize="14sp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginHorizontal="16dp"
-        android:hint="@string/login_password_hint"
-        app:prefixIcon="@drawable/ic_lock" />
+                <com.example.storyappjava.ui.component.PasswordEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/login_password_hint"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    app:prefixIcon="@drawable/ic_lock" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/btn_register" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:text="@string/register" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
-</LinearLayout>
+            </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>
