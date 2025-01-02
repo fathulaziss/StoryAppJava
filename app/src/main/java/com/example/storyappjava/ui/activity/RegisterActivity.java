@@ -26,6 +26,7 @@ import com.example.storyappjava.data.remote.response.RegisterResponse;
 import com.example.storyappjava.databinding.ActivityRegisterBinding;
 import com.example.storyappjava.ui.viewmodel.AuthViewModel;
 import com.example.storyappjava.ui.viewmodel.ViewModelFactory;
+import com.example.storyappjava.util.SharedPreferenceUtil;
 
 import java.util.Objects;
 
@@ -34,6 +35,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     String TAG = RegisterActivity.class.getSimpleName();
     ActivityRegisterBinding binding;
     AuthViewModel authViewModel;
+    SharedPreferenceUtil pref;
+
+    // TODO: Add shared preferences to skip onboarding screen when already register account or already login
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        pref = new SharedPreferenceUtil(getApplicationContext());
 
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
@@ -66,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else if (result instanceof Result.Success) {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setVisibility(View.VISIBLE);
+                    pref.setAlreadyHaveAccount(true);
                     RegisterResponse res = ((Result.Success<RegisterResponse>) result).getData();
                     Toast.makeText(this,getString(R.string.success) + ": " + res.getMessage(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, LoginActivity.class);

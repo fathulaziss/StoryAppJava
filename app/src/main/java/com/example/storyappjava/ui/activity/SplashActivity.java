@@ -32,11 +32,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkToken() {
         new Handler().postDelayed(() -> {
-            final String token = pref.getToken();
             Intent intent;
 
-            if (token.isEmpty()) {
-                intent = new Intent(SplashActivity.this, OnBoardingActivity.class);
+            if (pref.getToken().isEmpty()) {
+                if (pref.isAlreadyHaveAccount()) {
+                    intent = new Intent(SplashActivity.this, LoginActivity.class);
+                } else {
+                    intent = new Intent(SplashActivity.this, OnBoardingActivity.class);
+                }
             } else {
                 intent = new Intent(SplashActivity.this, MainActivity.class);
             }
