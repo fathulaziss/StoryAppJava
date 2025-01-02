@@ -3,7 +3,7 @@
     <string name="splash_desc">Story App Splash Screen</string>
     <string name="on_boarding_title">Selamat datang di Dicoding Story!</string>
     <string name="on_boarding_desc">Mau berbagi ilmu tentang Android, iOS, Machine Learning, Cloud, Front-End, Back-End, dan bidang IT lainnya? Di Dicoding Story aja!</string>
-    <string name="btn_login">Masuk</string>
+    <string name="login">Masuk</string>
     <string name="register">Daftar</string>
     <string name="login_title">Sudah siap untuk berbagi cerita?</string>
     <string name="login_description">Masukkan dulu datamu ya</string>
@@ -19,4 +19,5 @@
     <string name="empty_name_validation">Name can\'t be empty</string>
     <string name="empty_email_validation">Email can\'t be empty</string>
     <string name="empty_password_validation">Password can\'t be empty</string>
+    <string name="not_yet_have_account">Belum mempunyai akun?</string>
 </resources>

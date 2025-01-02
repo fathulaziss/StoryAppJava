@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentBottom="true"
     tools:context=".ui.activity.RegisterActivity">
 
     <include
@@ -26,6 +25,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -33,7 +33,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginVertical="24dp"
-                    android:layout_marginHorizontal="16dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:text="@string/register_title" />
@@ -42,7 +41,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginHorizontal="16dp"
                     android:textSize="14sp"
                     android:layout_gravity="start"
                     android:text="@string/name" />
@@ -54,7 +52,6 @@
                     android:padding="12dp"
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp"
-                    android:layout_marginHorizontal="16dp"
                     android:hint="@string/name_hint"
                     android:singleLine="true"
                     app:prefixIcon="@drawable/ic_person" />
@@ -63,7 +60,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginHorizontal="16dp"
                     android:textSize="14sp"
                     android:layout_gravity="start"
                     android:text="@string/email" />
@@ -75,7 +71,6 @@
                     android:padding="12dp"
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp"
-                    android:layout_marginHorizontal="16dp"
                     android:hint="@string/login_email_hint"
                     android:singleLine="true"
                     app:prefixIcon="@drawable/ic_email" />
@@ -84,7 +79,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginHorizontal="16dp"
                     android:textSize="14sp"
                     android:layout_gravity="start"
                     android:text="@string/password" />
@@ -96,7 +90,6 @@
                     android:padding="12dp"
                     android:textSize="14sp"
                     android:layout_marginBottom="32dp"
-                    android:layout_marginHorizontal="16dp"
                     android:hint="@string/login_password_hint"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
@@ -106,7 +99,6 @@
                     android:id="@+id/btn_register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
                     android:text="@string/register" />
 
                 <ProgressBar

@@ -42,13 +42,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
+
         binding.main.getViewTreeObserver().addOnPreDrawListener(() -> {
             isKeyboardVisible();
             return true;
         });
-
-        ViewModelFactory factory = ViewModelFactory.getInstance(this);
-        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
 
         Toolbar toolbar = binding.appBar.toolbarTitleAppBar;
         setSupportActionBar(toolbar);

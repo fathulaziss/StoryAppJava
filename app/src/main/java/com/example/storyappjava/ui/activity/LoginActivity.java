@@ -1,5 +1,9 @@
 package com.example.storyappjava.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,9 +15,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.storyappjava.R;
 import com.example.storyappjava.databinding.ActivityLoginBinding;
@@ -33,6 +34,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.main.getViewTreeObserver().addOnPreDrawListener(() -> {
+            isKeyboardVisible();
+            return true;
+        });
+
+        binding.tvNotYetHaveAccount.append(" ");
+        binding.tvRegister.setPaintFlags(binding.tvRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        binding.tvRegister.setOnClickListener(this);
+
         binding.btnLogin.setOnClickListener(this);
     }
 
@@ -44,23 +54,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 Log.d(TAG,"failed to login because validation");
             }
+        } else if (view.getId() == R.id.tv_register) {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View view = getCurrentFocus();
-            if (view instanceof EditText) {
-                // Dismiss the keyboard when touching outside EditText
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
-                view.clearFocus();
             }
         }
-        return super.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     private boolean validateLogin() {
@@ -68,17 +82,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String password = Objects.requireNonNull(binding.etPassword.getText()).toString().trim();
 
         if (TextUtils.isEmpty(email)) {
-            binding.etEmail.setError("Email can't be empty");
-            Toast.makeText(this,"Email can't be empty", Toast.LENGTH_SHORT).show();
+            binding.etEmail.setError(getString(R.string.empty_email_validation));
+            Toast.makeText(this,getString(R.string.empty_email_validation), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (TextUtils.isEmpty(password)) {
-            binding.etPassword.setError("Password can't be empty");
-            Toast.makeText(this,"Password can't be empty", Toast.LENGTH_SHORT).show();
+            binding.etPassword.setError(getString(R.string.empty_password_validation));
+            Toast.makeText(this,getString(R.string.empty_password_validation), Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
+    }
+
+    private void isKeyboardVisible() {
+        Rect rect = new Rect();
+        binding.main.getWindowVisibleDisplayFrame(rect);
+        int screenHeight = binding.main.getHeight();
+        int keypadHeight = screenHeight - rect.bottom;
+
+        if (keypadHeight > screenHeight * 0.15) {
+            binding.layoutContent.setPadding(0, 0, 0, rect.bottom / 2);
+        } else {
+            binding.layoutContent.setPadding(0, 0, 0, 0);
+        }
     }
 }

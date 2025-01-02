@@ -31,6 +31,7 @@ public class OnBoardingActivity extends AppCompatActivity implements View.OnClic
         if (view.getId() == R.id.btn_login) {
             Intent intent = new Intent(OnBoardingActivity.this, LoginActivity.class);
             startActivity(intent);
+            finish();
         } else if (view.getId() == R.id.btn_register) {
             Intent intent = new Intent(OnBoardingActivity.this, RegisterActivity.class);
             startActivity(intent);
