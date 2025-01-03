@@ -12,6 +12,8 @@ import com.example.storyappjava.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    // TODO: add appbar without back button
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

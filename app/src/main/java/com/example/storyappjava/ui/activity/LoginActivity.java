@@ -15,9 +15,18 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.storyappjava.R;
+import com.example.storyappjava.data.remote.Result;
+import com.example.storyappjava.data.remote.dto.LoginDto;
+import com.example.storyappjava.data.remote.response.LoginResponse;
+import com.example.storyappjava.data.remote.response.RegisterResponse;
 import com.example.storyappjava.databinding.ActivityLoginBinding;
+import com.example.storyappjava.ui.MainActivity;
+import com.example.storyappjava.ui.viewmodel.AuthViewModel;
+import com.example.storyappjava.ui.viewmodel.ViewModelFactory;
+import com.example.storyappjava.util.SharedPreferenceUtil;
 
 import java.util.Objects;
 
@@ -25,6 +34,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     String TAG = LoginActivity.class.getSimpleName();
     ActivityLoginBinding binding;
+    AuthViewModel authViewModel;
+    SharedPreferenceUtil pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        pref = new SharedPreferenceUtil(LoginActivity.this);
+
+        ViewModelFactory factory = ViewModelFactory.getInstance(this);
+        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
 
         binding.main.getViewTreeObserver().addOnPreDrawListener(() -> {
             isKeyboardVisible();
@@ -43,6 +59,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         binding.tvRegister.setPaintFlags(binding.tvRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         binding.tvRegister.setOnClickListener(this);
 
+        authViewModel.getLoginResult().observe(this, result -> {
+            if (result != null) {
+                if (result instanceof Result.Loading) {
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.btnLogin.setVisibility(View.GONE);
+                    binding.layoutNotYetHaveAccount.setVisibility(View.GONE);
+                } else if (result instanceof Result.Success) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnLogin.setVisibility(View.VISIBLE);
+                    binding.layoutNotYetHaveAccount.setVisibility(View.VISIBLE);
+
+                    LoginResponse res = ((Result.Success<LoginResponse>) result).getData();
+                    LoginDto data = res.getLoginResult();
+                    pref.setToken(data.getToken());
+                    pref.setAlreadyHaveAccount(true);
+                    Toast.makeText(this,getString(R.string.success) + ": " + res.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else if (result instanceof Result.Error) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.btnLogin.setVisibility(View.VISIBLE);
+                    binding.layoutNotYetHaveAccount.setVisibility(View.VISIBLE);
+                    Toast.makeText(this,getString(R.string.failed) + ": "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         binding.btnLogin.setOnClickListener(this);
     }
 
@@ -50,9 +96,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view.getId() == R.id.btn_login) {
             if (validateLogin()) {
-                Log.d(TAG, "do login");
-            } else {
-                Log.d(TAG,"failed to login because validation");
+                authViewModel.login(
+                        this,
+                        Objects.requireNonNull(binding.etEmail.getText()).toString(),
+                        Objects.requireNonNull(binding.etPassword.getText()).toString());
             }
         } else if (view.getId() == R.id.tv_register) {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);

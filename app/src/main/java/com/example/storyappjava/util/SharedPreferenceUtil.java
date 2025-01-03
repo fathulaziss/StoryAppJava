@@ -9,34 +9,28 @@ public class SharedPreferenceUtil {
     public static final String PREF_ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String PREF_IS_ALREADY_HAVE_ACCOUNT = "IS_ALREADY_HAVE_ACCOUNT";
 
-    private final Context context;
+    private final SharedPreferences sharedPreferences;
+    private final SharedPreferences.Editor editor;
 
     public SharedPreferenceUtil(Context context) {
-        this.context = context;
-    }
-
-    public SharedPreferences getSharedPreference() {
-        return context.getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
+        this.sharedPreferences = context.getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
+        this.editor = sharedPreferences.edit();
     }
 
     public Boolean isAlreadyHaveAccount() {
-        SharedPreferences pref = getSharedPreference();
-        return pref.getBoolean(PREF_IS_ALREADY_HAVE_ACCOUNT, false);
+        return sharedPreferences.getBoolean(PREF_IS_ALREADY_HAVE_ACCOUNT, false);
     }
 
     public void setAlreadyHaveAccount(Boolean value) {
-        SharedPreferences.Editor editor = getSharedPreference().edit();
         editor.putBoolean(PREF_IS_ALREADY_HAVE_ACCOUNT, value);
         editor.apply();
     }
 
     public String getToken() {
-        SharedPreferences pref = getSharedPreference();
-        return pref.getString(PREF_ACCESS_TOKEN, "");
+        return sharedPreferences.getString(PREF_ACCESS_TOKEN, "");
     }
 
     public void setToken(String token) {
-        SharedPreferences.Editor editor = getSharedPreference().edit();
         editor.putString(PREF_ACCESS_TOKEN, token);
         editor.apply();
     }

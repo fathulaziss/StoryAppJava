@@ -54,6 +54,7 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp"
                 android:hint="@string/login_email_hint"
+                android:singleLine="true"
                 app:prefixIcon="@drawable/ic_email" />
 
             <TextView
@@ -89,6 +90,7 @@
                 android:visibility="gone" />
 
             <LinearLayout
+                android:id="@+id/layout_not_yet_have_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

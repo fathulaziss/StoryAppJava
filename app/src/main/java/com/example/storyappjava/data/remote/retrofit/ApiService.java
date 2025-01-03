@@ -1,5 +1,6 @@
 package com.example.storyappjava.data.remote.retrofit;
 
+import com.example.storyappjava.data.remote.response.LoginResponse;
 import com.example.storyappjava.data.remote.response.RegisterResponse;
 
 import retrofit2.Call;
@@ -12,6 +13,12 @@ public interface ApiService {
     @POST("register")
     Call<RegisterResponse> register(
             @Field("name") String name,
+            @Field("email") String email,
+            @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("login")
+    Call<LoginResponse> login(
             @Field("email") String email,
             @Field("password") String password);
 }

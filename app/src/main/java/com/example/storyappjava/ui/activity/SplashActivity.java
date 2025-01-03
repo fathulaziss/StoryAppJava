@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         ActivitySplashBinding binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        pref = new SharedPreferenceUtil(getApplicationContext());
+        pref = new SharedPreferenceUtil(SplashActivity.this);
         checkToken();
     }
 

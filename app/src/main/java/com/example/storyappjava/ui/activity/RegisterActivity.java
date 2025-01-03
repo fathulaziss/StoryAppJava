@@ -37,8 +37,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     AuthViewModel authViewModel;
     SharedPreferenceUtil pref;
 
-    // TODO: Add shared preferences to skip onboarding screen when already register account or already login
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        pref = new SharedPreferenceUtil(getApplicationContext());
+        pref = new SharedPreferenceUtil(RegisterActivity.this);
 
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
@@ -94,8 +92,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         if (view.getId() == R.id.btn_register) {
             if (validateRegister()) {
-                authViewModel
-                        .register(
+                authViewModel.register(
                                 this,
                                 Objects.requireNonNull(binding.etName.getText()).toString(),
                                 Objects.requireNonNull(binding.etEmail.getText()).toString(),
