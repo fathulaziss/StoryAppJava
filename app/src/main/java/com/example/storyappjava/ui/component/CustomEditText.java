@@ -18,7 +18,7 @@ import java.util.Objects;
 public class CustomEditText extends AppCompatEditText {
     private int defaultBorderColor = Color.LTGRAY;
     private int focusedBorderColor = Color.BLUE;
-    private int errorBorderColor = Color.RED;
+    int errorBorderColor = Color.RED;
     private float cornerRadius = 20;
     private Drawable prefixIcon;
     private int maxLines = 1;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StoryAppJava</string>
+    <string name="app_name">Story App Java</string>
     <string name="splash_desc">Story App Splash Screen</string>
     <string name="on_boarding_title">Selamat datang di Dicoding Story!</string>
     <string name="on_boarding_desc">Mau berbagi ilmu tentang Android, iOS, Machine Learning, Cloud, Front-End, Back-End, dan bidang IT lainnya? Di Dicoding Story aja!</string>

@@ -7,6 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/custom_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

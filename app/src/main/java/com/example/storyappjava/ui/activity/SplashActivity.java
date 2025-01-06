@@ -8,7 +8,6 @@ import android.os.Handler;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.storyappjava.R;
 import com.example.storyappjava.databinding.ActivitySplashBinding;
 import com.example.storyappjava.ui.MainActivity;
 import com.example.storyappjava.util.SharedPreferenceUtil;
@@ -17,6 +16,7 @@ import com.example.storyappjava.util.SharedPreferenceUtil;
 public class SplashActivity extends AppCompatActivity {
 
     SharedPreferenceUtil pref;
+    String TAG = SplashActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
