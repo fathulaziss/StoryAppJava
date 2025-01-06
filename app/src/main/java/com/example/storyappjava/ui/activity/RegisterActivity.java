@@ -23,10 +23,10 @@ import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    String TAG = RegisterActivity.class.getSimpleName();
-    ActivityRegisterBinding binding;
-    AuthViewModel authViewModel;
-    SharedPreferenceUtil pref;
+    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private ActivityRegisterBinding binding;
+    private AuthViewModel authViewModel;
+    private SharedPreferenceUtil pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

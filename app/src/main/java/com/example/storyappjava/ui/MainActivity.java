@@ -1,5 +1,6 @@
 package com.example.storyappjava.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.example.storyappjava.data.remote.Result;
 import com.example.storyappjava.data.remote.dto.StoryDto;
 import com.example.storyappjava.data.remote.response.StoryResponse;
 import com.example.storyappjava.databinding.ActivityMainBinding;
+import com.example.storyappjava.ui.activity.StoryFormActivity;
 import com.example.storyappjava.ui.adapter.list.StoriesAdapter;
 import com.example.storyappjava.ui.viewmodel.StoryViewModel;
 import com.example.storyappjava.ui.viewmodel.ViewModelFactory;
@@ -67,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this,getString(R.string.failed) + ": "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        binding.fabAdd.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, StoryFormActivity.class);
+            startActivity(intent);
         });
     }
 }

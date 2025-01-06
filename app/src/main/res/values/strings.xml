@@ -20,4 +20,9 @@
     <string name="empty_email_validation">Email can\'t be empty</string>
     <string name="empty_password_validation">Password can\'t be empty</string>
     <string name="not_yet_have_account">Belum mempunyai akun?</string>
+    <string name="story_form_appbar">New Story</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="description_hint">Description</string>
+    <string name="upload">Upload</string>
 </resources>
