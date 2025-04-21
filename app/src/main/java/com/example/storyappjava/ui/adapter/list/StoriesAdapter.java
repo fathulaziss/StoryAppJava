@@ -37,9 +37,19 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
     @Override
     public void onBindViewHolder(@NonNull StoriesAdapter.StoriesViewHolder holder, int position) {
         StoryDto story = stories.get(position);
+        String[] names = story.getName().split(" ");
+        StringBuilder nameCapitalized = new StringBuilder();
+
+        for (String name : names) {
+            if (!name.isEmpty()) {
+                nameCapitalized.append(Character.toUpperCase(name.charAt(0)))
+                        .append(name.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
 
         Glide.with(context).load(story.getPhotoUrl()).into(holder.ivPhoto);
-        holder.tvName.setText(story.getName());
+        holder.tvName.setText(nameCapitalized);
         holder.tvDesc.setText(story.getDescription());
         holder.cvStory.setOnClickListener(view -> {});
     }

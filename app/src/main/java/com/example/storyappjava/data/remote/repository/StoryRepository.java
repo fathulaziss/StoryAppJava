@@ -11,8 +11,12 @@ import com.example.storyappjava.data.remote.response.StoryResponse;
 import com.example.storyappjava.data.remote.retrofit.ApiService;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,6 +28,7 @@ public class StoryRepository {
     private final ApiService apiService;
 
     private final MediatorLiveData<Result<StoryResponse>> storiesResult = new MediatorLiveData<>();
+    private final MediatorLiveData<Result<StoryResponse>> uploadResult = new MediatorLiveData<>();
 
     public StoryRepository(ApiService apiService) {
         this.apiService = apiService;
@@ -79,5 +84,50 @@ public class StoryRepository {
             }
         });
         return storiesResult;
+    }
+
+    public LiveData<Result<StoryResponse>> uploadStory(String token, String description, File photo, Float lat, Float lon) {
+        uploadResult.setValue(new Result.Loading<>());
+
+        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), description);
+        RequestBody latBody = lat != null ? RequestBody.create(MediaType.parse("text/plain"), String.valueOf(lat)) : null;
+        RequestBody lonBody = lon != null ? RequestBody.create(MediaType.parse("text/plain"), String.valueOf(lon)) : null;
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), photo);
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData("photo", photo.getName(), requestFile);
+
+        Call<StoryResponse> client = apiService.uploadStory(token, descriptionBody, photoPart, latBody, lonBody);
+        client.enqueue(new Callback<StoryResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<StoryResponse> call, @NonNull Response<StoryResponse> response) {
+                Log.d(TAG, "response code : " + response.code());
+                Log.d(TAG, "response message : " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response body : " + response.body());
+                    if (response.body() != null) {
+                        uploadResult.setValue(new Result.Success<>(response.body()));
+                    }
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.d(TAG, "response error body : " + errorBody);
+
+                            Gson gson = new Gson();
+                            StoryResponse errorResponse = gson.fromJson(errorBody, StoryResponse.class);
+                            uploadResult.setValue(new Result.Error<>(errorResponse.getMessage()));
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG,"Error reading the response body", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StoryResponse> call, @NonNull Throwable t) {
+                uploadResult.setValue(new Result.Error<>(t.getLocalizedMessage()));
+            }
+        });
+        return uploadResult;
     }
 }

@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.storyappjava.R;
 import com.example.storyappjava.data.remote.Result;
@@ -27,13 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String TAG = MainActivity.class.getSimpleName();
     private ActivityMainBinding binding;
-    private StoryViewModel storyViewModel;
     private StoriesAdapter storiesAdapter;
-    private SharedPreferenceUtil pref;
-
-    private final Integer page = 1;
-    private final Integer size = 10;
-    private final Integer location = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +40,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
-        pref = new SharedPreferenceUtil(MainActivity.this);
+        SharedPreferenceUtil pref = new SharedPreferenceUtil(MainActivity.this);
 
         ViewModelFactory factory = ViewModelFactory.getInstance(this);
-        storyViewModel = new ViewModelProvider(this, factory).get(StoryViewModel.class);
+        StoryViewModel storyViewModel = new ViewModelProvider(this, factory).get(StoryViewModel.class);
 
-        binding.rvStories.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvStories.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rvStories.setHasFixedSize(true);
 
         String token = "Bearer " + pref.getToken();
-        storyViewModel.getStories(token, page, size, location).observe(this, result -> {
+        Integer page = 1;
+        Integer size = 10;
+        Integer location = 0;
+        storyViewModel.getStories(this, token, page, size, location);
+        storyViewModel.getStoryResult().observe(this, result -> {
             if (result != null) {
                 if (result instanceof Result.Loading) {
                     binding.pbLoading.setVisibility(View.VISIBLE);
