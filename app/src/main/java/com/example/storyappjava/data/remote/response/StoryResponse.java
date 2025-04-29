@@ -15,6 +15,9 @@ public class StoryResponse {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("story")
+    private StoryDto story;
+
     @SerializedName("listStory")
     private List<StoryDto> listStory;
 
@@ -32,6 +35,14 @@ public class StoryResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public StoryDto getDetailStory() {
+        return story;
+    }
+
+    public void setStory(StoryDto story) {
+        this.story = story;
     }
 
     public List<StoryDto> getListStory() {

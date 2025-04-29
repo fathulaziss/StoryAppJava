@@ -29,6 +29,7 @@ public class StoryRepository {
 
     private final MediatorLiveData<Result<StoryResponse>> storiesResult = new MediatorLiveData<>();
     private final MediatorLiveData<Result<StoryResponse>> uploadResult = new MediatorLiveData<>();
+    private final MediatorLiveData<Result<StoryResponse>> storyDetailResult = new MediatorLiveData<>();
 
     public StoryRepository(ApiService apiService) {
         this.apiService = apiService;
@@ -84,6 +85,44 @@ public class StoryRepository {
             }
         });
         return storiesResult;
+    }
+
+    public LiveData<Result<StoryResponse>> getDetailStory(String token, String id) {
+        storyDetailResult.setValue(new Result.Loading<>());
+
+        Call<StoryResponse> client = apiService.getStoryDetail(token, id);
+        client.enqueue(new Callback<StoryResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<StoryResponse> call, @NonNull Response<StoryResponse> response) {
+                Log.d(TAG, "response code : " + response.code());
+                Log.d(TAG, "response message : " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response body : " + response.body());
+                    if (response.body() != null) {
+                        storyDetailResult.setValue(new Result.Success<>(response.body()));
+                    }
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.d(TAG, "response error body : " + errorBody);
+
+                            Gson gson = new Gson();
+                            StoryResponse errorResponse = gson.fromJson(errorBody, StoryResponse.class);
+                            storyDetailResult.setValue(new Result.Error<>(errorResponse.getMessage()));
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG,"Error reading the response body", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<StoryResponse> call, @NonNull Throwable t) {
+                storyDetailResult.setValue(new Result.Error<>(t.getLocalizedMessage()));
+            }
+        });
+        return storyDetailResult;
     }
 
     public LiveData<Result<StoryResponse>> uploadStory(String token, String description, File photo, Float lat, Float lon) {

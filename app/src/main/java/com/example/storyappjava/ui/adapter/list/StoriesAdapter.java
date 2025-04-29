@@ -21,10 +21,12 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
 
     private final Context context;
     private final List<StoryDto> stories;
+    private final OnItemClickListener onItemClickListener;
 
-    public StoriesAdapter(Context context, List<StoryDto> stories) {
+    public StoriesAdapter(Context context, List<StoryDto> stories, OnItemClickListener listener) {
         this.context = context;
         this.stories = stories;
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -52,6 +54,10 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
         holder.tvName.setText(nameCapitalized);
         holder.tvDesc.setText(story.getDescription());
         holder.cvStory.setOnClickListener(view -> {});
+
+        holder.itemView.setOnClickListener(view -> {
+            onItemClickListener.onItemClicked(story);
+        });
     }
 
     @Override
@@ -71,5 +77,9 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
             cvStory = itemView.findViewById(R.id.cv_story);
             ivPhoto = itemView.findViewById(R.id.iv_photo);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClicked(StoryDto story);
     }
 }

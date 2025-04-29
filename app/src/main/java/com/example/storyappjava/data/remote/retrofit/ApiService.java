@@ -14,6 +14,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -38,6 +39,12 @@ public interface ApiService {
             @Query("page") int page,
             @Query("size") int size,
             @Query("location") int location
+    );
+
+    @GET("stories/{id}")
+    Call<StoryResponse> getStoryDetail(
+            @Header("Authorization") String token,
+            @Path("id") String storyId
     );
 
     @Multipart

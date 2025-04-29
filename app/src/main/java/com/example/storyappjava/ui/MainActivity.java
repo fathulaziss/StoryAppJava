@@ -15,6 +15,7 @@ import com.example.storyappjava.data.remote.Result;
 import com.example.storyappjava.data.remote.dto.StoryDto;
 import com.example.storyappjava.data.remote.response.StoryResponse;
 import com.example.storyappjava.databinding.ActivityMainBinding;
+import com.example.storyappjava.ui.activity.StoryDetailActivity;
 import com.example.storyappjava.ui.activity.StoryFormActivity;
 import com.example.storyappjava.ui.adapter.list.StoriesAdapter;
 import com.example.storyappjava.ui.viewmodel.StoryViewModel;
@@ -23,7 +24,7 @@ import com.example.storyappjava.util.SharedPreferenceUtil;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements StoriesAdapter.OnItemClickListener {
 
     private static String TAG = MainActivity.class.getSimpleName();
     private ActivityMainBinding binding;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (result instanceof Result.Success) {
                     binding.pbLoading.setVisibility(View.GONE);
                     List<StoryDto> stories = ((Result.Success<StoryResponse>) result).getData().getListStory();
-                    storiesAdapter = new StoriesAdapter(this, stories);
+                    storiesAdapter = new StoriesAdapter(this, stories, this);
                     binding.rvStories.setAdapter(storiesAdapter);
                 } else if (result instanceof Result.Error) {
                     binding.pbLoading.setVisibility(View.GONE);
@@ -73,5 +74,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, StoryFormActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onItemClicked(StoryDto storyDto) {
+        Intent intent = new Intent(this, StoryDetailActivity.class);
+        intent.putExtra("id", storyDto.getId());
+        startActivity(intent);
     }
 }

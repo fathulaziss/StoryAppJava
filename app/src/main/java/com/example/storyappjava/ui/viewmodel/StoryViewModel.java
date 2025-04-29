@@ -17,6 +17,7 @@ public class StoryViewModel extends ViewModel {
     private final StoryRepository storyRepository;
     private final MutableLiveData<Result<StoryResponse>> getStoryResult = new MutableLiveData<>();
     private final MutableLiveData<Result<StoryResponse>> uploadStoryResult = new MutableLiveData<>();
+    private final MutableLiveData<Result<StoryResponse>> getDetailStoryResult = new MutableLiveData<>();
 
     public StoryViewModel(StoryRepository storyRepository) {
         this.storyRepository = storyRepository;
@@ -26,12 +27,20 @@ public class StoryViewModel extends ViewModel {
         return getStoryResult;
     }
 
+    public LiveData<Result<StoryResponse>> getDetailStoryResult() {
+        return getDetailStoryResult;
+    }
+
     public LiveData<Result<StoryResponse>> getUploadStoryResult() {
         return uploadStoryResult;
     }
 
     public void getStories(LifecycleOwner lifecycleOwner, String token, Integer page, Integer size, Integer location) {
         storyRepository.getStories(token, page, size, location).observe(lifecycleOwner, getStoryResult::postValue);
+    }
+
+    public void getDetailStory(LifecycleOwner lifecycleOwner, String token, String id) {
+        storyRepository.getDetailStory(token, id).observe(lifecycleOwner, getDetailStoryResult::postValue);
     }
 
     public void uploadStory(LifecycleOwner lifecycleOwner, String token, String description, File photo, Float lat, Float lon) {
