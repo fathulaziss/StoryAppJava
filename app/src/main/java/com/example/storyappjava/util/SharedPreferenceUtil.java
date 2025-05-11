@@ -34,4 +34,9 @@ public class SharedPreferenceUtil {
         editor.putString(PREF_ACCESS_TOKEN, token);
         editor.apply();
     }
+
+    public void removeToken() {
+        editor.remove(PREF_ACCESS_TOKEN);
+        editor.apply();
+    }
 }
