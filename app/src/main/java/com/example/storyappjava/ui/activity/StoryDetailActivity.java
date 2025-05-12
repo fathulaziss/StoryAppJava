@@ -1,16 +1,23 @@
 package com.example.storyappjava.ui.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.storyappjava.R;
 import com.example.storyappjava.data.remote.Result;
 import com.example.storyappjava.data.remote.dto.StoryDto;
@@ -29,6 +36,8 @@ public class StoryDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityStoryDetailBinding.inflate(getLayoutInflater());
+        String transitionName = getIntent().getStringExtra("transitionName");
+        ViewCompat.setTransitionName(binding.ivPhoto, transitionName);
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.appBar.toolbarTitleAppBar;
@@ -64,8 +73,22 @@ public class StoryDetailActivity extends AppCompatActivity {
 
                     binding.tvName.setText(nameCapitalized);
                     binding.tvDesc.setText(detailStory.getDescription());
+                    supportPostponeEnterTransition();
                     Glide.with(this)
                             .load(detailStory.getPhotoUrl())
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    supportStartPostponedEnterTransition();
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    supportStartPostponedEnterTransition();
+                                    return false;
+                                }
+                            })
                             .into(binding.ivPhoto);
                 } else if (result instanceof Result.Error) {
                     binding.tvDesc.setText("Data Not Found!");
@@ -80,6 +103,7 @@ public class StoryDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             getOnBackPressedDispatcher().onBackPressed(); // Recommended replacement
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);

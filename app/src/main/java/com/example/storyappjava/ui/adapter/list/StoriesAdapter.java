@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -55,8 +56,10 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
         holder.tvDesc.setText(story.getDescription());
         holder.cvStory.setOnClickListener(view -> {});
 
+        ViewCompat.setTransitionName(holder.ivPhoto, "storyImage_" + story.getId());
+
         holder.itemView.setOnClickListener(view -> {
-            onItemClickListener.onItemClicked(story);
+            onItemClickListener.onItemClicked(story, holder.ivPhoto);
         });
     }
 
@@ -80,6 +83,6 @@ public class StoriesAdapter extends RecyclerView.Adapter<StoriesAdapter.StoriesV
     }
 
     public interface OnItemClickListener {
-        void onItemClicked(StoryDto story);
+        void onItemClicked(StoryDto story, ImageView sharedImageView);
     }
 }

@@ -1,19 +1,18 @@
 package com.example.storyappjava.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -107,9 +106,17 @@ public class MainActivity extends AppCompatActivity implements StoriesAdapter.On
     }
 
     @Override
-    public void onItemClicked(StoryDto storyDto) {
+    public void onItemClicked(StoryDto storyDto, ImageView sharedImageView) {
         Intent intent = new Intent(this, StoryDetailActivity.class);
         intent.putExtra("id", storyDto.getId());
-        startActivity(intent);
+        intent.putExtra("transitionName", ViewCompat.getTransitionName(sharedImageView));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                sharedImageView,
+                ViewCompat.getTransitionName(sharedImageView)
+        );
+        startActivity(intent, options.toBundle());
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
