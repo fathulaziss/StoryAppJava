@@ -32,8 +32,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Objects;
 
 public class StoryFormActivity extends AppCompatActivity {
@@ -106,12 +104,13 @@ public class StoryFormActivity extends AppCompatActivity {
                 } else if (result instanceof Result.Success) {
                     loadingDialog.dismiss();
                     String message = ((Result.Success<StoryResponse>) result).getData().getMessage();
-                    Toast.makeText(this,getString(R.string.success) + ": "+ message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,getString(R.string.success) + " : "+ message, Toast.LENGTH_SHORT).show();
                     String token = "Bearer " + pref.getToken();
                     storyViewModel.getStories(this, token, page, size, location);
                     finish();
                 } else if (result instanceof Result.Error) {
-                    Toast.makeText(this,getString(R.string.failed) + ": "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
+                    Toast.makeText(this,getString(R.string.failed) + " : "+ ((Result.Error<?>) result).getError(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
